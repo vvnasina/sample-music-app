@@ -59,6 +59,7 @@ class TMAVPlayer: NSObject {
         if songIndex < 0 || songIndex >= songs.count {
             return
         }
+        // Check is asset url is available or not
         if let assetURL = songs[songIndex].assetURL {
             // Maintains the current playing song media item
             currentSongIndex = songIndex
