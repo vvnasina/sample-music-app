@@ -17,6 +17,8 @@ struct AudioPlayer {
     
     let songs = MPMediaQuery.songs().items ?? []
     
+    // MARK: - Computed properties
+    
     var currentPlayingItemTitle: String? {
         return audioPlayer.nowPlayingItem?.title
     }

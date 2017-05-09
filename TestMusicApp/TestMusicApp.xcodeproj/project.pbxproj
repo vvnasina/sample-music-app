@@ -13,6 +13,7 @@
 		27F777F71EC066CA00FBFB0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27F777F61EC066CA00FBFB0C /* Assets.xcassets */; };
 		27F777FA1EC066CA00FBFB0C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27F777F81EC066CA00FBFB0C /* LaunchScreen.storyboard */; };
 		27F778021EC06BD900FBFB0C /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F778011EC06BD900FBFB0C /* AudioPlayer.swift */; };
+		6388B0DC1EC2204600962FE9 /* TMAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6388B0DB1EC2204600962FE9 /* TMAVPlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		27F777F91EC066CA00FBFB0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		27F777FB1EC066CA00FBFB0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27F778011EC06BD900FBFB0C /* AudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		6388B0DB1EC2204600962FE9 /* TMAVPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMAVPlayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				27F777EF1EC066C900FBFB0C /* AppDelegate.swift */,
 				27F777F11EC066C900FBFB0C /* PlayerViewController.swift */,
 				27F778011EC06BD900FBFB0C /* AudioPlayer.swift */,
+				6388B0DB1EC2204600962FE9 /* TMAVPlayer.swift */,
 				27F777F31EC066CA00FBFB0C /* Main.storyboard */,
 				27F777F61EC066CA00FBFB0C /* Assets.xcassets */,
 				27F777F81EC066CA00FBFB0C /* LaunchScreen.storyboard */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6388B0DC1EC2204600962FE9 /* TMAVPlayer.swift in Sources */,
 				27F777F21EC066C900FBFB0C /* PlayerViewController.swift in Sources */,
 				27F777F01EC066C900FBFB0C /* AppDelegate.swift in Sources */,
 				27F778021EC06BD900FBFB0C /* AudioPlayer.swift in Sources */,

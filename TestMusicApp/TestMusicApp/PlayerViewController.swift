@@ -14,13 +14,13 @@ class PlayerViewController: UIViewController {
     @IBOutlet fileprivate weak var playButton: UIButton!
     @IBOutlet fileprivate weak var seekSlider: UISlider!
     
-    fileprivate let audioPlayer = AudioPlayer.shared
+    fileprivate let audioPlayer = TMAVPlayer.shared
     private var audioTimer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Adding observer for did change the current playing song
-        NotificationCenter.default.addObserver(self, selector: #selector(playNotificationMethod), name: NSNotification.Name.MPMusicPlayerControllerNowPlayingItemDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(playNotificationMethod), name: NSNotification.Name(rawValue: NSNotification.Name.TMAVPlayerSongDidStartPlaying), object: nil)
         
         // Timer to update the song progress
         self.audioTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCurrentPlayTime), userInfo: nil, repeats: true)
@@ -51,7 +51,9 @@ class PlayerViewController: UIViewController {
     }
     
     func updateCurrentPlayTime() {
-        seekSlider.value = audioPlayer.currentPlayingTime
+        if audioPlayer.isAudioPlaying {
+            seekSlider.value = audioPlayer.currentPlayingTime
+        }
     }
 
     // MARK: - Button Actions
@@ -97,8 +99,7 @@ extension PlayerViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedMediaItem = audioPlayer.songs[indexPath.row]
-        audioPlayer.prepareToPlay(item: selectedMediaItem)
+        audioPlayer.prepareToPlay(songIndex: indexPath.row)
         playButton.isSelected = true        
     }
     
