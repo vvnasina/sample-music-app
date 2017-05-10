@@ -13,9 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Register for notifications from the control center
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        
         return true
     }
 
@@ -41,7 +44,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         
         // Stop the music player here
-        AudioPlayer.shared.stop()
+        TMAVPlayer.shared.stop()
+        
+        // Stop sync notification from itunes
+        UIApplication.shared.endReceivingRemoteControlEvents()
+    }
+    
+    // MARK: - Control center delegates
+    
+    override func remoteControlReceived(with event: UIEvent?) {
+        if let rc = event?.subtype {
+            switch rc {
+            case .remoteControlTogglePlayPause,
+                 .remoteControlPlay,
+                 .remoteControlPause:
+                TMAVPlayer.shared.playBack()
+            case .remoteControlNextTrack:
+                TMAVPlayer.shared.next()
+            case .remoteControlPreviousTrack:
+                TMAVPlayer.shared.previous()
+            default: break
+            }
+        }
     }
 
 }

@@ -18,9 +18,17 @@ class TMAVPlayer: NSObject {
     private var currentSongIndex: Int! = nil
     
     override private init() {
+        // Register app for background play
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        }
+        catch {
+            debugPrint("Background mode is not supporting")
+        }
+        
         if #available(iOS 9.3, *) {
             MPMediaLibrary.requestAuthorization { (status) in
-                // Not Handling the status You should allow the Music base access
+                // For now not Handling the status You should allow the Music base access
                 switch status {
                 case .authorized: break
                 case .denied: break
@@ -66,14 +74,20 @@ class TMAVPlayer: NSObject {
             // Creating player item upon the media item
             let playerItem = AVPlayerItem(url: assetURL)
             
-            // Remove early added observer
+            // Remove early added observers
             NotificationCenter.default.removeObserver(self)
+            
+            // Post start song notification here
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: NSNotification.Name.TMAVPlayerSongDidStartPlaying), object: nil)
             
             // Subscribe to the AVPlayerItem's DidPlayToEndTime notification.
             NotificationCenter.default.addObserver(self, selector: #selector(itemDidFinishPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
             
             audioPlayer.replaceCurrentItem(with: playerItem)
             audioPlayer.play()
+            
+            // Update the control center
+            configureNowPlayingInfo()
         }
     }
     
@@ -85,6 +99,11 @@ class TMAVPlayer: NSObject {
         else {
             audioPlayer.play()
         }
+        // Update control center
+        configureNowPlayingInfo()
+        
+        // Post play state changed notification
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: NSNotification.Name.TMAVPlayerPlayStateChanged), object: nil)
     }
     
     func previous() {
@@ -107,6 +126,8 @@ class TMAVPlayer: NSObject {
     
     func seekToTime(time: Float) {
         audioPlayer.seek(to: CMTimeMake(Int64(time), 1))
+        //Update control center
+        configureNowPlayingInfo()
     }
     
     // MARK: - Observer methods
@@ -116,6 +137,24 @@ class TMAVPlayer: NSObject {
         next()
     }
     
+    // MARK: - Control center methods
+    
+    func configureNowPlayingInfo() {
+        let currentMediaItem = self.currentPlayingItem
+        let albumImage = UIImage.init(named: "noPlaylistImage")
+        var currentArtwork: MPMediaItemArtwork = MPMediaItemArtwork.init(image: albumImage!)
+        if let artWork = currentPlayingItem?.artwork {
+            currentArtwork = artWork
+        }
+        
+        // Updates the control centre data here
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyTitle: currentMediaItem?.title ?? "",
+                                                                 MPMediaItemPropertyArtist: currentMediaItem?.artist ?? "",
+                                                                 MPMediaItemPropertyArtwork: currentArtwork,
+                                                                 MPNowPlayingInfoPropertyPlaybackRate: 1.0, MPMediaItemPropertyPlaybackDuration: self.currentPlayingItem?.playbackDuration ?? 0.0,
+                                                                 MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlayingTime]
+    }
+    
 }
 
 // Extending the Notification name on the basis of new song did start playing
@@ -123,6 +162,10 @@ extension NSNotification.Name {
     
     static var TMAVPlayerSongDidStartPlaying: String {
         return "TMAVPlayerSongDidStartPlaying"
+    }
+    
+    static var TMAVPlayerPlayStateChanged: String {
+        return "TMAVPlayerPlayStateChanged"
     }
     
 }

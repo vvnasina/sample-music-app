@@ -14,6 +14,7 @@ class PlayerViewController: UIViewController {
     @IBOutlet fileprivate weak var playButton: UIButton!
     @IBOutlet fileprivate weak var seekSlider: UISlider!
     
+    // Here using TMAVPlayer which build upon the AVPlayer
     fileprivate let audioPlayer = TMAVPlayer.shared
     private var audioTimer: Timer?
     
@@ -21,6 +22,9 @@ class PlayerViewController: UIViewController {
         super.viewDidLoad()
         // Adding observer for did change the current playing song
         NotificationCenter.default.addObserver(self, selector: #selector(playNotificationMethod), name: NSNotification.Name(rawValue: NSNotification.Name.TMAVPlayerSongDidStartPlaying), object: nil)
+        
+        // Catch the play state changed actions
+        NotificationCenter.default.addObserver(self, selector: #selector(playBackStateChanged), name: NSNotification.Name(rawValue: NSNotification.Name.TMAVPlayerPlayStateChanged), object: nil)
         
         // Timer to update the song progress
         self.audioTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCurrentPlayTime), userInfo: nil, repeats: true)
@@ -32,7 +36,7 @@ class PlayerViewController: UIViewController {
     }
     
     deinit {
-        //Remove observer for the class here
+        // Remove observer for the class here
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -48,6 +52,15 @@ class PlayerViewController: UIViewController {
         seekSlider.minimumValue = 0.0
         seekSlider.maximumValue = Float(audioPlayer.currentPlayingItem?.playbackDuration ?? 0.0)
         seekSlider.value = audioPlayer.currentPlayingTime
+    }
+    
+    func playBackStateChanged() {
+        if audioPlayer.isAudioPlaying {
+            playButton.isSelected = true
+        }
+        else {
+            playButton.isSelected = false
+        }
     }
     
     func updateCurrentPlayTime() {
